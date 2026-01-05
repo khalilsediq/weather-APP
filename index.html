@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Weather App</title>
+    <!-- Link to our CSS file for styling -->
+    <link rel="stylesheet" href="style.css" />
+    <!-- Google Fonts for a premium look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Main Container: Holds everything in the center -->
+    <div class="card">
+      <!-- Header: The search section -->
+      <div class="search-box">
+        <input
+          type="text"
+          id="cityInput"
+          placeholder="Enter city name..."
+          spellcheck="false"
+        />
+        <button id="searchBtn">
+          <!-- Simple search icon using text or an image could go here, we'll use a stick figure or emoji for simplicity if needed, but CSS shapes are better. Let's use text for now -->
+          Search
+        </button>
+      </div>
+
+      <!-- Body: Displays the weather info -->
+      <!-- This section is hidden by default in CSS until we find a city -->
+      <div class="weather" id="weatherSection">
+        <img
+          src="https://openweathermap.org/img/wn/02d@2x.png"
+          alt="weather-icon"
+          class="weather-icon"
+          id="weatherIcon"
+        />
+        <h1 class="temp" id="temperature">--°C</h1>
+        <h2 class="city" id="cityName">City Name</h2>
+
+        <div class="details">
+          <div class="col">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/481/481427.png"
+              alt="humidity"
+              class="icon-small"
+            />
+            <!-- Placeholder icon URL, usually local assets are better but for single file use online -->
+            <div>
+              <p class="humidity" id="humidity">--%</p>
+              <p>Humidity</p>
+            </div>
+          </div>
+          <div class="col">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/136/136712.png"
+              alt="wind"
+              class="icon-small"
+            />
+            <div>
+              <p class="wind" id="windSpeed">-- km/h</p>
+              <p>Wind Speed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Message: Shown when city is not found -->
+      <div class="error" id="errorMessage">
+        <p>Invalid city name</p>
+      </div>
+    </div>
+
+    <!-- Link to our JavaScript file where the logic lives -->
+    <script src="app.js"></script>
+  </body>
+</html>
