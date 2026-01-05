@@ -1,52 +1,184 @@
 /* 
   STEP 1: BASIC RESET 
-  We remove default margins and padding from all elements to have full control.
 */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Outfit", sans-serif; /* Using the font we linked in HTML */
+  font-family: "Outfit", sans-serif;
 }
 
 /* 
   STEP 2: BODY STYLING
-  Background color and centering the card.
+  Classic, neutral background.
 */
-body {
-  background: #222; /* Dark fallback */
-  background: linear-gradient(
-    135deg,
-    #00feba,
-    #5b548a
-  ); /* Gradient background */
-  height: 100vh; /* Full viewport height */
-  display: flex; /* Flexbox to center content */
-  align-items: center; /* Vertical center */
-  justify-content: center; /* Horizontal center */
+/* Day Background: Bright Blue Sky */
+body.day-background {
+  background: linear-gradient(180deg, #2980b9, #6dd5fa, #ffffff); /* More realistic blue gradient */
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+/* Night Background: Deep Dark Blue */
+body.night-background {
+  background: linear-gradient(180deg, #020024 0%, #090979 35%, #00d4ff 100%); 
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* 
-  STEP 3: THE GLASS CARD
-  The main container for our app.
+  LIVE SCENE CONTAINER 
 */
-.card {
+.background-scene {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Behind everything */
+  overflow: hidden;
+  pointer-events: none; /* Let clicks pass through */
+}
+
+/* 
+  SUN 
+*/
+.sun {
+  position: absolute;
+  top: 50px;
+  right: 100px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle at center, #fff 0%, #f1c40f 60%, rgba(243, 229, 68, 0) 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 40px #f1c40f, 0 0 80px #f39c12;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 2s ease, transform 1s ease;
+  transform: translateY(20px);
+}
+
+body.day-background .sun {
+  opacity: 1;
+  transform: translateY(0);
+  animation: sunPulse 4s infinite alternate;
+}
+
+@keyframes sunPulse {
+  0% { transform: scale(1); box-shadow: 0 0 40px #f1c40f, 0 0 80px #f39c12; }
+  100% { transform: scale(1.1); box-shadow: 0 0 60px #f1c40f, 0 0 100px #f39c12; }
+}
+
+/* 
+  MOON 
+*/
+.moon {
+  position: absolute;
+  top: 60px;
+  right: 100px;
+  width: 80px;
+  height: 80px;
+  background: transparent;
+  box-shadow: -15px 15px 0 5px #fff; /* Crescent shape using shadow */
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 2s ease, transform 1s ease;
+  transform: rotate(-20deg) translateY(20px);
+}
+
+body.night-background .moon {
+  opacity: 1;
+  transform: rotate(-20deg) translateY(0);
+}
+
+/* 
+  CLOUDS 
+  Made with CSS circles
+*/
+.cloud {
+  position: absolute;
+  background: #fff;
+  border-radius: 100px;
+  opacity: 0.8;
+  animation: floatCloud linear infinite;
+}
+
+.cloud::after, .cloud::before {
+  content: '';
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+}
+
+/* Specific Cloud Shapes & Positions */
+.cloud-1 {
+  width: 200px; height: 60px;
+  top: 100px; left: -200px;
+  animation-duration: 45s;
+  animation-delay: 0s;
+}
+.cloud-1::after { width: 80px; height: 80px; top: -40px; left: 30px; }
+.cloud-1::before { width: 100px; height: 100px; top: -50px; left: 80px; }
+
+.cloud-2 {
+  width: 120px; height: 40px;
+  top: 250px; left: -150px;
+  animation-duration: 35s;
+  animation-delay: 5s;
+  opacity: 0.6;
+}
+.cloud-2::after { width: 40px; height: 40px; top: -20px; left: 15px; }
+.cloud-2::before { width: 50px; height: 50px; top: -30px; left: 45px; }
+
+.cloud-3 {
+  width: 300px; height: 90px;
+  top: 50px; left: -350px;
+  animation-duration: 60s;
+  animation-delay: -10s;
+}
+.cloud-3::after { width: 100px; height: 100px; top: -50px; left: 50px; }
+.cloud-3::before { width: 150px; height: 150px; top: -80px; left: 100px; }
+
+/* In Night mode, dim clouds slightly */
+body.night-background .cloud {
+  opacity: 0.2; /* Ghostly clouds at night */
+}
+
+@keyframes floatCloud {
+  0% { margin-left: -300px; }
+  100% { margin-left: 100%; }
+} 
+
+/* 
+  STARS 
+  Simple small dots
+*/
+.stars {
+    width: 2px; height: 2px;
+    background: transparent;
+    box-shadow: 200px 300px #fff, 500px 100px #fff, 300px 500px #fff, 800px 200px #fff, 1000px 400px #fff, 100px 600px #fff;
+    opacity: 0;
+    transition: opacity 1s;
+}
+body.night-background .stars {
+    opacity: 1;
+}
+
+/* 
+  STEP 3: MAIN APP CONTAINER
+  Holds the search bar and the list of weather cards.
+*/
+.app-container {
   width: 90%;
   max-width: 470px;
-  background: linear-gradient(
-    135deg,
-    #00feba,
-    #5b548a
-  ); /* Same as body for blending, or different for contrast. Let's make it glass */
-  background: rgba(255, 255, 255, 0.1); /* Transparent white */
-  backdrop-filter: blur(10px); /* Blurs the background behind the card */
-  color: #fff;
-  margin: 100px auto 0;
-  border-radius: 20px;
-  padding: 40px 35px;
   text-align: center;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  margin: 0; /* Override margin since we use body flex */
+  justify-self: center;
+  margin: 20px 0px 0px 0px;
 }
 
 /* 
@@ -57,62 +189,110 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .search-box input {
-  border: 0;
+  border: 1px solid #ddd;
   outline: 0;
-  background: #ebfffc;
-  color: #555;
-  padding: 10px 25px;
-  height: 60px;
-  border-radius: 30px;
-  flex: 1; /* Takes available space */
-  margin-right: 16px;
-  font-size: 18px;
+  background: #fff;
+  color: #333;
+  padding: 10px 15px;
+  height: 50px;
+  border-radius: 5px;
+  flex: 1;
+  margin-right: 15px;
+  font-size: 16px;
 }
 
 .search-box button {
   border: 0;
   outline: 0;
-  background: #ebfffc;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  background: #333; /* Classic dark button */
+  color: #fff;
+  border-radius: 5px;
+  width: 50px;
+  height: 50px;
   cursor: pointer;
-  transition: 0.2s ease; /* Smooth hover effect */
+  transition: 0.2s ease;
 }
 
 .search-box button:hover {
-  background: #cdf3eb;
-  transform: scale(1.05); /* Grows slightly on hover */
+  background: #555;
 }
 
 /* 
-  STEP 5: WEATHER INFO
+  STEP 5: WEATHER CARD (Dynamic)
+  Classic card style for each search result.
 */
+.weather-card {
+  background: #fff;
+  color: #333;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  text-align: center;
+  animation: fadeIn 0.5s ease-out; /* Fade in animation */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .weather-icon {
-  width: 170px;
-  margin-top: 30px;
+  width: 100px; /* Slightly smaller for multiple cards */
+  margin-top: 10px;
 }
 
-.weather h1 {
-  font-size: 80px;
+.weather-card h1 {
+  font-size: 50px;
+  font-weight: 600;
+  color: #333;
+}
+
+.weather-card h2 {
+  font-size: 30px;
   font-weight: 500;
+  color: #555;
+  margin-bottom: 5px; /* Reduced margin */
 }
 
-.weather h2 {
-  font-size: 45px;
-  font-weight: 400;
-  margin-top: -10px;
+.country {
+  font-size: 0.6em;
+  background: #333;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 5px;
+  vertical-align: middle;
+}
+
+.description {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 5px;
+  font-style: italic;
+}
+
+.feels-like {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 20px;
 }
 
 .details {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  margin-top: 50px;
+  justify-content: space-around; /* Better spacing for cards */
+  padding: 0 10px;
+  margin-top: 20px;
+  border-top: 1px solid #eee; /* Separator line */
+  padding-top: 20px;
 }
 
 .col {
@@ -122,28 +302,32 @@ body {
 }
 
 .col img {
-  width: 40px;
+  width: 30px;
   margin-right: 10px;
+  opacity: 0.7; /* Muted icons */
 }
 
 .humidity,
 .wind {
-  font-size: 28px;
-  margin-top: -6px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.col p {
+  font-size: 14px;
 }
 
 /* 
-  STEP 6: STATE CLASSES
-  We will use JavaScript to toggle these.
+  ERROR MESSAGE
 */
-.weather {
-  display: none; /* Hidden by default until we search */
+.error {
+  background: #ffe6e6; /* Light red bg */
+  color: #d8000c;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  display: none;
+  border: 1px solid #ffb3b3;
 }
 
-.error {
-  text-align: left;
-  margin-left: 10px;
-  font-size: 14px;
-  margin-top: 10px;
-  display: none; /* Hidden by default */
-}
